@@ -5,7 +5,7 @@ import UserModel from './user.js';
 import CategoryModel from './category.js';
 import ProductModel from './product.js';
 import OrderModel from './order.js';
-import OrderProductModel from './orderProduct.js';
+import OrderProductModel from './OrderProduct.js';
 
 const sequelize = new Sequelize(
   dbConfig.development.database,

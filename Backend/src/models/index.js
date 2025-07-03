@@ -8,22 +8,22 @@ import OrderModel from './order.js';
 import OrderProductModel from './orderProduct.js';
 
 const sequelize = new Sequelize(
-  dbConfig.development.database,
-  dbConfig.development.username,
-  dbConfig.development.password,
-  {
-    host: dbConfig.development.host,
-    dialect: dbConfig.development.dialect,
-    operatorsAliases: false,
-  }
+  dbConfig.development.database,
+  dbConfig.development.username,
+  dbConfig.development.password,
+  {
+    host: dbConfig.development.host,
+    dialect: dbConfig.development.dialect,
+    operatorsAliases: false,
+  }
 );
 
-// Testando a conexão com o banco
+// Testando a conexão com o banco - TEMPORARIAMENTE COMENTADO PARA IMPLANTAÇÃO INICIAL
 try {
-  await sequelize.authenticate();
-  console.log('Conectado com o Banco de Dados.');
+  await sequelize.authenticate();
+  console.log('Conectado com o Banco de Dados.');
 } catch (err) {
-  console.error('Não foi possível conectar ao banco de dados:', err);
+  console.error('Não foi possível conectar ao banco de dados:', err);
 }
 
 const db = {};
@@ -44,11 +44,12 @@ db.Product.associate(db);
 db.Order.associate(db);
 db.OrderProduct.associate(db);
 
+// Sincronização das tabelas - TEMPORARIAMENTE COMENTADO PARA IMPLANTAÇÃO INICIAL
 try {
-  await sequelize.sync({ force: false });
-  console.log('Tabelas sincronizadas.');
+  await sequelize.sync({ force: false });
+  console.log('Tabelas sincronizadas.');
 } catch (err) {
-  console.error('Erro ao sincronizar as tabelas:', err);
+  console.error('Erro ao sincronizar as tabelas:', err);
 }
 
 export default db;

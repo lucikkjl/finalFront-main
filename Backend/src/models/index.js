@@ -5,20 +5,27 @@ import UserModel from './user.js';
 import CategoryModel from './category.js';
 import ProductModel from './product.js';
 import OrderModel from './order.js';
-import OrderProductModel from './OrderProduct.js';
+import OrderProductModel from './OrderProduct.js'; // Verifique a capitalização deste nome de arquivo!
 
+// Obtém o ambiente atual (development ou production)
+const env = process.env.NODE_ENV || 'development';
+const config = dbConfig[env]; // Seleciona a configuração correta com base no ambiente
+
+// Cria a instância do Sequelize usando as CONFIGURAÇÕES DO AMBIENTE (config)
 const sequelize = new Sequelize(
-  dbConfig.development.database,
-  dbConfig.development.username,
-  dbConfig.development.password,
+  config.database, // <-- CORRIGIDO: Usar config.database
+  config.username, // <-- CORRIGIDO: Usar config.username
+  config.password, // <-- CORRIGIDO: Usar config.password
   {
-    host: dbConfig.development.host,
-    dialect: dbConfig.development.dialect,
+    host: config.host, // <-- CORRIGIDO: Usar config.host
+    dialect: config.dialect, // <-- CORRIGIDO: Usar config.dialect
     operatorsAliases: false,
+    // Adiciona opções de dialeto, especialmente para SSL se o provedor de BD exigir
+    // Isso é importante se o seu banco de dados hospedado exigir SSL (muitos serviços de nuvem exigem)
+    dialectOptions: config.dialectOptions || {}
   }
 );
 
-// Testando a conexão com o banco - TEMPORARIAMENTE COMENTADO PARA IMPLANTAÇÃO INICIAL
 try {
   await sequelize.authenticate();
   console.log('Conectado com o Banco de Dados.');
@@ -38,13 +45,14 @@ db.Order = OrderModel(sequelize, DataTypes);
 db.OrderProduct = OrderProductModel(sequelize, DataTypes);
 
 // Relacionamentos das tabelas
-db.User.associate(db);
-db.Category.associate(db);
-db.Product.associate(db);
-db.Order.associate(db);
-db.OrderProduct.associate(db);
+// Percorre todos os modelos e chama a função associate se ela existir
+Object.keys(db).forEach(modelName => {
+  if (db[modelName].associate) {
+    db[modelName].associate(db);
+  }
+});
 
-// Sincronização das tabelas - TEMPORARIAMENTE COMENTADO PARA IMPLANTAÇÃO INICIAL
+
 try {
   await sequelize.sync({ force: false });
   console.log('Tabelas sincronizadas.');
